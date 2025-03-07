@@ -230,6 +230,10 @@ export interface ExpressionContext {
   R_PAREN?: IToken[];
 }
 
+export interface JitterbitVariableExpressionContext extends IToken {
+  payload: { variable: string; defaultValue: string };
+}
+
 export interface ApexBindVariableExpressionContext {
   apex: CstNode[];
   COLON: IToken[];
@@ -302,6 +306,7 @@ export interface FunctionExpressionContext {
 
 export interface AtomicExpressionContext {
   apexBindVariableExpression?: CstNode[];
+  jitterbitVariableExpression?: JitterbitVariableExpressionContext[];
   NumberIdentifier?: IToken[];
   UnsignedInteger?: IToken[];
   SignedInteger?: IToken[];

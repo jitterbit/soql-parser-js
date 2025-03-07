@@ -20,7 +20,8 @@ export type LiteralType =
   | 'DATE_LITERAL'
   | 'DATE_N_LITERAL'
   | 'APEX_BIND_VARIABLE'
-  | 'SUBQUERY';
+  | 'SUBQUERY'
+  | 'JITTERBIT_VARIABLE';
 export type FieldType =
   | Field
   | FieldWithAlias
@@ -182,7 +183,8 @@ export type Condition =
   | ValueWithDateLiteralCondition
   | ValueWithDateNLiteralCondition
   | ValueFunctionCondition
-  | NegationCondition;
+  | NegationCondition
+  | JitterbitVariableCondition;
 
 export type ConditionWithValueQuery = Condition | ValueQueryCondition;
 
@@ -225,6 +227,13 @@ export interface ValueFunctionCondition extends OptionalParentheses {
   operator: Operator;
   value: string | string[];
   literalType?: LiteralType | LiteralType[];
+}
+
+export interface JitterbitVariableCondition extends OptionalParentheses {
+  field: string;
+  operator: Operator;
+  value: { text: string; defaultValue: string | undefined; variable: string };
+  literalType?: 'JITTERBIT_VARIABLE';
 }
 
 export interface NegationCondition {

@@ -252,6 +252,9 @@ export function getWhereValue(value: any | any[], literalType?: LiteralType | Li
       case 'APEX_BIND_VARIABLE': {
         return `:${value}`;
       }
+      case 'JITTERBIT_VARIABLE': {
+        return value.text;
+      }
       default: {
         return value;
       }

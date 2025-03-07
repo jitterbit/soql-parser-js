@@ -815,6 +815,36 @@ export const UnsignedInteger = createToken({
   categories: [NumberIdentifier, IntegerNumberIdentifier],
 });
 
+/**
+ * Match:
+ * - '[name]'
+ * - '[name{default}]'
+ * - [name]
+ * - [name{default}]
+ */
+const jitterbitVariableRegex = /(')?\[(?<variable>[a-zA-Z0-9_.]+)(\{(?<defaultValue>.+)\})?\]\1/y;
+
+function matchJitterbitVariable(text: string, startOffset: number) {
+  // // using 'y' sticky flag (Note it is not supported on IE11...)
+  // // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/sticky
+  jitterbitVariableRegex.lastIndex = startOffset;
+
+  const execResult = jitterbitVariableRegex.exec(text) as RegExpExecArray & { payload: RegExpExecArray['groups'] };
+  if (!execResult) {
+    return null;
+  }
+
+  execResult.payload = execResult.groups;
+  return execResult;
+}
+
+export const JitterbitVariable = createToken({
+  name: 'JITTERBIT_VARIABLE',
+  pattern: matchJitterbitVariable,
+  line_breaks: false,
+  start_chars_hint: ["'", '['],
+});
+
 // Using Scope enumeration values
 // https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_using_scope.htm?search_text=format()
 // export const UsingScopeEnumeration = createToken({
@@ -1029,6 +1059,7 @@ export const allTokens = [
   Not,
 
   // The Identifier must appear after the keywords because all keywords are valid identifiers.
+  JitterbitVariable,
   CurrencyPrefixedDecimal,
   CurrencyPrefixedInteger,
   StringIdentifier,
