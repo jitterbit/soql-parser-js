@@ -821,7 +821,7 @@ export function parse(soql: string, options?: ParseQueryConfig) {
   if (lexResult.errors.length > 0) {
     if (logErrors) {
       console.log('Lexing Errors:');
-      console.log(lexResult.errors);
+      console.log(JSON.stringify(lexResult.errors, null, 4));
     }
     throw new LexingError(lexResult.errors[0]);
   }
@@ -847,7 +847,7 @@ export function parse(soql: string, options?: ParseQueryConfig) {
   if (parser.errors.length > 0) {
     if (logErrors) {
       console.log('Parsing Errors:');
-      console.log(parser.errors);
+      console.log(JSON.stringify(parser.errors, null, 4));
     }
     if (!ignoreParseErrors) {
       throw new ParsingError(parser.errors[0]);
