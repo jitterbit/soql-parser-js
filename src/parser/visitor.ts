@@ -789,6 +789,14 @@ class SOQLVisitor extends BaseSoqlVisitor {
     if (ctx.apexBindVariableExpression) {
       value = this.visit(ctx.apexBindVariableExpression);
       literalType = 'APEX_BIND_VARIABLE';
+    } else if (ctx.jitterbitVariableExpression) {
+      const data = ctx.jitterbitVariableExpression[0];
+      value = {
+        text: data.image,
+        variable: data.payload.variable,
+        defaultValue: data.payload.defaultValue,
+      };
+      literalType = 'JITTERBIT_VARIABLE';
     } else if (ctx.NumberIdentifier) {
       value = ctx.NumberIdentifier[0].image;
       literalType = this.helpers.$_getLiteralTypeFromTokenType(ctx.NumberIdentifier[0].tokenType.name);

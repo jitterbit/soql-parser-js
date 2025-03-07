@@ -13,14 +13,14 @@ interface ParenCount {
   left: number;
 }
 
-class LexingError extends Error {
+export class LexingError extends Error {
   constructor(lexingError: ILexingError) {
     super(`${lexingError.message} (${lexingError.line}:${lexingError.column})`);
     this.name = 'LexingError';
   }
 }
 
-class ParsingError extends Error {
+export class ParsingError extends Error {
   constructor(parsingError: IRecognitionException) {
     super(parsingError.message);
     this.name = parsingError.name;
@@ -620,6 +620,7 @@ export class SoqlParser extends CstParser {
           { GATE: () => isArray, ALT: () => this.SUBRULE(this.arrayExpression) },
           { GATE: () => isArray && allowSubquery, ALT: () => this.SUBRULE(this.whereClauseSubqueryIdentifier) },
           // NON-SET
+          { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.JitterbitVariable, { LABEL: 'jitterbitVariableExpression' }) },
           { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.DateIdentifier) },
           { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.CurrencyPrefixedDecimal, { LABEL: 'CurrencyPrefixedDecimal' }) },
           { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.CurrencyPrefixedInteger, { LABEL: 'CurrencyPrefixedInteger' }) },
