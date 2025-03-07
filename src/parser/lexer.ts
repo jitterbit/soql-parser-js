@@ -1,4 +1,4 @@
-import { createToken, Lexer, TokenType } from 'chevrotain';
+import { createToken, IToken, Lexer, tokenMatcher, TokenType } from 'chevrotain';
 
 export interface TokenVocabulary {
   [vocab: string]: TokenType;
@@ -824,9 +824,19 @@ export const UnsignedInteger = createToken({
  */
 const jitterbitVariableRegex = /(')?\[(?<variable>[a-zA-Z0-9_.]+)(\{(?<defaultValue>.+)\})?\]\1/y;
 
-function matchJitterbitVariable(text: string, startOffset: number) {
-  // // using 'y' sticky flag (Note it is not supported on IE11...)
-  // // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/sticky
+function matchJitterbitVariable(text: string, startOffset: number, matchedTokens: IToken[]) {
+  /**
+   * Jitterbit variables does not immediately follow any identifier
+   *
+   * E.g. WHERE SBQQ__StandardTerm__c = :quotes[3].SBQQ__QuoteLine__r[0].Term__c
+   * Avoid matching [3] as a jitterbit variable
+   */
+  if (matchedTokens.length && tokenMatcher(matchedTokens[matchedTokens.length - 1], Identifier)) {
+    return null;
+  }
+
+  // using 'y' sticky flag (Note it is not supported on IE11...)
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/sticky
   jitterbitVariableRegex.lastIndex = startOffset;
 
   const execResult = jitterbitVariableRegex.exec(text) as RegExpExecArray & { payload: RegExpExecArray['groups'] };
