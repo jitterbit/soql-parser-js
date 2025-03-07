@@ -2,14 +2,14 @@ import { Query } from '../../src';
 import { JitterbitBaseScenario } from './shared-scenarios';
 
 interface JitterbitValidScenario extends JitterbitBaseScenario {
-  expected: Query;
+  metadata: Query;
 }
 
 const quotedVariable: JitterbitValidScenario[] = [
   {
     name: 'quoted variable without default value',
     query: "SELECT Id FROM Account WHERE Id = '[variable]'",
-    expected: {
+    metadata: {
       fields: [
         {
           type: 'Field',
@@ -30,7 +30,7 @@ const quotedVariable: JitterbitValidScenario[] = [
   {
     name: 'quoted variable with default value',
     query: "SELECT Id FROM Account WHERE Id = '[variable{default}]'",
-    expected: {
+    metadata: {
       fields: [
         {
           type: 'Field',
@@ -54,7 +54,7 @@ const unquotedVariable: JitterbitValidScenario[] = [
   {
     name: 'unquoted variable without default value',
     query: 'SELECT Id FROM Account WHERE Id = [variable]',
-    expected: {
+    metadata: {
       fields: [
         {
           type: 'Field',
@@ -75,7 +75,7 @@ const unquotedVariable: JitterbitValidScenario[] = [
   {
     name: 'unquoted variable with default value',
     query: 'SELECT Id FROM Account WHERE Id = [variable{default}]',
-    expected: {
+    metadata: {
       fields: [
         {
           type: 'Field',
@@ -98,7 +98,7 @@ const unquotedVariable: JitterbitValidScenario[] = [
 const allPossibleVariableCharacters: JitterbitValidScenario = {
   name: 'all possible variable characters',
   query: 'SELECT Id FROM Account WHERE Id = [0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ._]',
-  expected: {
+  metadata: {
     fields: [
       {
         type: 'Field',
@@ -133,7 +133,7 @@ const allCharactersText = allCharacters.join('');
 const allPossibleDefaultValueCharacters: JitterbitValidScenario = {
   name: 'all possible default value characters',
   query: `SELECT Id FROM Account WHERE Id = [variable{${allCharactersText}}]`,
-  expected: {
+  metadata: {
     fields: [
       {
         type: 'Field',
@@ -160,7 +160,7 @@ const malformedQuoted: JitterbitValidScenario[] = [
   {
     name: 'parse as string when missing opening square bracket',
     query: "SELECT Id FROM Account WHERE Id = 'variable]'",
-    expected: {
+    metadata: {
       fields: [
         {
           field: 'Id',
@@ -181,7 +181,7 @@ const malformedQuoted: JitterbitValidScenario[] = [
   {
     name: 'parse as string when missing closing square bracket',
     query: "SELECT Id FROM Account WHERE Id = '[variable'",
-    expected: {
+    metadata: {
       fields: [
         {
           field: 'Id',
@@ -202,7 +202,7 @@ const malformedQuoted: JitterbitValidScenario[] = [
   {
     name: 'parse as string when missing opening curly bracket',
     query: "SELECT Id FROM Account WHERE Id = '[variabledefault}]'",
-    expected: {
+    metadata: {
       fields: [
         {
           field: 'Id',
@@ -223,7 +223,7 @@ const malformedQuoted: JitterbitValidScenario[] = [
   {
     name: 'parse as string when missing closing curly bracket',
     query: "SELECT Id FROM Account WHERE Id = '[variable{default]'",
-    expected: {
+    metadata: {
       fields: [
         {
           field: 'Id',
