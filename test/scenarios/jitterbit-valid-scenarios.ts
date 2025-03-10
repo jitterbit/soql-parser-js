@@ -332,6 +332,75 @@ const complexQueries: JitterbitValidScenario[] = [
       ],
     },
   },
+  {
+    name: 'string and quoted variables',
+    query: "SELECT Id FROM Account WHERE Id = '[variable]' AND Name = 'Bob' AND Country = '[countryVar{Brazil}]'",
+    metadata: {
+      sObject: 'Account',
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: { text: "'[variable]'", defaultValue: undefined, variable: 'variable' },
+        },
+        operator: 'AND',
+        right: {
+          left: {
+            field: 'Name',
+            literalType: 'STRING',
+            operator: '=',
+            value: "'Bob'",
+          },
+          operator: 'AND',
+          right: {
+            left: {
+              field: 'Country',
+              literalType: 'JITTERBIT_VARIABLE',
+              operator: '=',
+              value: { text: "'[countryVar{Brazil}]'", defaultValue: 'Brazil', variable: 'countryVar' },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'quoted and unquoted variables',
+    query: "SELECT Id FROM Account WHERE Id = '[variable]' OR Age >= [ageVar{27}]",
+    metadata: {
+      sObject: 'Account',
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: { text: "'[variable]'", defaultValue: undefined, variable: 'variable' },
+        },
+        operator: 'OR',
+        right: {
+          left: {
+            field: 'Age',
+            literalType: 'JITTERBIT_VARIABLE',
+            operator: '>=',
+            value: { text: '[ageVar{27}]', defaultValue: '27', variable: 'ageVar' },
+          },
+        },
+      },
+    },
+  },
 ];
 
 export const jitterbitValidScenarios: JitterbitValidScenario[] = [
