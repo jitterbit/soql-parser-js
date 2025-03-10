@@ -822,7 +822,7 @@ export const UnsignedInteger = createToken({
  * - [name]
  * - [name{default}]
  */
-const jitterbitVariableRegex = /(')?\[(?<variable>[a-zA-Z0-9_.]+)(\{(?<defaultValue>.+)\})?\]\1/y;
+const jitterbitVariableRegex = /(')?\[(?<variable>[a-zA-Z0-9_.]+)(\{(?<defaultValue>.+?)\})?\]\1/y;
 
 function matchJitterbitVariable(text: string, startOffset: number, matchedTokens: IToken[]) {
   /**

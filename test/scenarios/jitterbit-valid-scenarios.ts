@@ -93,6 +93,27 @@ const unquotedVariable: JitterbitValidScenario[] = [
       },
     },
   },
+  {
+    name: 'unquoted variable with quoted default value',
+    query: "SELECT Id FROM Account WHERE Id = [variable{'default'}]",
+    metadata: {
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      sObject: 'Account',
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: { text: "[variable{'default'}]", defaultValue: "'default'", variable: 'variable' },
+        },
+      },
+    },
+  },
 ];
 
 const allPossibleVariableCharacters: JitterbitValidScenario = {
@@ -396,6 +417,75 @@ const complexQueries: JitterbitValidScenario[] = [
             literalType: 'JITTERBIT_VARIABLE',
             operator: '>=',
             value: { text: '[ageVar{27}]', defaultValue: '27', variable: 'ageVar' },
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'two variables with default value',
+    query: "SELECT Id FROM Account WHERE Id = '[variable{abc}]' OR Id = '[idVar{def}]'",
+    metadata: {
+      sObject: 'Account',
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: { text: "'[variable{abc}]'", defaultValue: 'abc', variable: 'variable' },
+        },
+        operator: 'OR',
+        right: {
+          left: {
+            field: 'Id',
+            literalType: 'JITTERBIT_VARIABLE',
+            operator: '=',
+            value: { text: "'[idVar{def}]'", defaultValue: 'def', variable: 'idVar' },
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'three variables with default value',
+    query: "SELECT Id FROM Account WHERE Id = '[variable{abc}]' OR Age >= [ageVar{27}] OR Id = '[idVar{def}]'",
+    metadata: {
+      sObject: 'Account',
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: { text: "'[variable{abc}]'", defaultValue: 'abc', variable: 'variable' },
+        },
+        operator: 'OR',
+        right: {
+          left: {
+            field: 'Age',
+            literalType: 'JITTERBIT_VARIABLE',
+            operator: '>=',
+            value: { text: '[ageVar{27}]', defaultValue: '27', variable: 'ageVar' },
+          },
+          operator: 'OR',
+          right: {
+            left: {
+              field: 'Id',
+              literalType: 'JITTERBIT_VARIABLE',
+              operator: '=',
+              value: { text: "'[idVar{def}]'", defaultValue: 'def', variable: 'idVar' },
+            },
           },
         },
       },
