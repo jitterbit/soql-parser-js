@@ -13,14 +13,14 @@ interface ParenCount {
   left: number;
 }
 
-class LexingError extends Error {
+export class LexingError extends Error {
   constructor(lexingError: ILexingError) {
     super(`${lexingError.message} (${lexingError.line}:${lexingError.column})`);
     this.name = 'LexingError';
   }
 }
 
-class ParsingError extends Error {
+export class ParsingError extends Error {
   constructor(parsingError: IRecognitionException) {
     super(parsingError.message);
     this.name = parsingError.name;
@@ -620,6 +620,7 @@ export class SoqlParser extends CstParser {
           { GATE: () => isArray, ALT: () => this.SUBRULE(this.arrayExpression) },
           { GATE: () => isArray && allowSubquery, ALT: () => this.SUBRULE(this.whereClauseSubqueryIdentifier) },
           // NON-SET
+          { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.JitterbitVariable, { LABEL: 'jitterbitVariableExpression' }) },
           { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.DateIdentifier) },
           { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.CurrencyPrefixedDecimal, { LABEL: 'CurrencyPrefixedDecimal' }) },
           { GATE: () => !isArray, ALT: () => this.CONSUME(lexer.CurrencyPrefixedInteger, { LABEL: 'CurrencyPrefixedInteger' }) },
@@ -820,7 +821,7 @@ export function parse(soql: string, options?: ParseQueryConfig) {
   if (lexResult.errors.length > 0) {
     if (logErrors) {
       console.log('Lexing Errors:');
-      console.log(lexResult.errors);
+      console.log(JSON.stringify(lexResult.errors, null, 4));
     }
     throw new LexingError(lexResult.errors[0]);
   }
@@ -846,7 +847,7 @@ export function parse(soql: string, options?: ParseQueryConfig) {
   if (parser.errors.length > 0) {
     if (logErrors) {
       console.log('Parsing Errors:');
-      console.log(parser.errors);
+      console.log(JSON.stringify(parser.errors, null, 4));
     }
     if (!ignoreParseErrors) {
       throw new ParsingError(parser.errors[0]);
