@@ -593,6 +593,33 @@ const complexQueries: JitterbitValidScenario[] = [
       },
     },
   },
+  {
+    name: 'function and variables in where',
+    query: "SELECT Id, FORMAT(CreatedDate) FROM Account WHERE Id = '[variable]'",
+    metadata: {
+      sObject: 'Account',
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+        {
+          functionName: 'FORMAT',
+          parameters: ['CreatedDate'],
+          rawValue: 'FORMAT(CreatedDate)',
+          type: 'FieldFunctionExpression',
+        },
+      ],
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: { text: "'[variable]'", defaultValue: undefined, variable: 'variable' },
+        },
+      },
+    },
+  },
 ];
 
 export const jitterbitValidScenarios: JitterbitValidScenario[] = [
