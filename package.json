@@ -1,6 +1,6 @@
 {
   "name": "@jitterbit/soql-parser-js",
-  "version": "6.1.0-1",
+  "version": "6.1.0-2",
   "description": "Salesforce.com SOQL parser and composer",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -69,10 +69,11 @@
     "salesforce",
     "parse",
     "compose",
-    "parser"
+    "parser",
+    "jitterbit"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jetstreamapp/soql-parser-js"
+    "url": "git+https://github.com/jitterbit/soql-parser-js"
   }
 }
