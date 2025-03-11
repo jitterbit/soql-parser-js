@@ -151,31 +151,133 @@ for (let i = 32; i < 127; i++) {
 }
 const allCharactersText = allCharacters.join('');
 
-const allPossibleDefaultValueCharacters: JitterbitValidScenario = {
-  name: 'all possible default value characters',
-  query: `SELECT Id FROM Account WHERE Id = [variable{${allCharactersText}}]`,
-  metadata: {
-    fields: [
-      {
-        type: 'Field',
-        field: 'Id',
-      },
-    ],
-    sObject: 'Account',
-    where: {
-      left: {
-        field: 'Id',
-        literalType: 'JITTERBIT_VARIABLE',
-        operator: '=',
-        value: {
-          text: `[variable{${allCharactersText}}]`,
-          defaultValue: allCharactersText,
-          variable: 'variable',
+const defaultValues: JitterbitValidScenario[] = [
+  {
+    name: 'all possible default value characters',
+    query: `SELECT Id FROM Account WHERE Id = [variable{${allCharactersText}}]`,
+    metadata: {
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      sObject: 'Account',
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: {
+            text: `[variable{${allCharactersText}}]`,
+            defaultValue: allCharactersText,
+            variable: 'variable',
+          },
         },
       },
     },
   },
-};
+  {
+    name: 'specific utc date time',
+    query: `SELECT Id FROM Account WHERE CreatedDate >= [variable{2005-10-08T01:02:03Z}]`,
+    metadata: {
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      sObject: 'Account',
+      where: {
+        left: {
+          field: 'CreatedDate',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '>=',
+          value: {
+            text: `[variable{2005-10-08T01:02:03Z}]`,
+            defaultValue: '2005-10-08T01:02:03Z',
+            variable: 'variable',
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'specific timezoned date time',
+    query: `SELECT Id FROM Account WHERE CreatedDate >= [variable{1999-01-01T23:01:01+01:00}]`,
+    metadata: {
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      sObject: 'Account',
+      where: {
+        left: {
+          field: 'CreatedDate',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '>=',
+          value: {
+            text: `[variable{1999-01-01T23:01:01+01:00}]`,
+            defaultValue: '1999-01-01T23:01:01+01:00',
+            variable: 'variable',
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'date literal',
+    query: `SELECT Id FROM Account WHERE CreatedDate >= [variable{LAST_N_DAYS:365}]`,
+    metadata: {
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      sObject: 'Account',
+      where: {
+        left: {
+          field: 'CreatedDate',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '>=',
+          value: {
+            text: `[variable{LAST_N_DAYS:365}]`,
+            defaultValue: 'LAST_N_DAYS:365',
+            variable: 'variable',
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'escaped curly bracket',
+    query: `SELECT Id FROM Account WHERE Id = '[variable{\\{test\\}}]'`,
+    metadata: {
+      fields: [
+        {
+          type: 'Field',
+          field: 'Id',
+        },
+      ],
+      sObject: 'Account',
+      where: {
+        left: {
+          field: 'Id',
+          literalType: 'JITTERBIT_VARIABLE',
+          operator: '=',
+          value: {
+            text: `'[variable{\\{test\\}}]'`,
+            defaultValue: '\\{test\\}',
+            variable: 'variable',
+          },
+        },
+      },
+    },
+  },
+];
 
 const malformedQuoted: JitterbitValidScenario[] = [
   {
@@ -497,7 +599,7 @@ export const jitterbitValidScenarios: JitterbitValidScenario[] = [
   ...quotedVariable,
   ...unquotedVariable,
   allPossibleVariableCharacters,
-  allPossibleDefaultValueCharacters,
+  ...defaultValues,
   ...malformedQuoted,
   ...variablesInSubquery,
   ...variablesWithRelations,
