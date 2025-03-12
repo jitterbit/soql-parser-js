@@ -7,7 +7,7 @@
     "outDir": "dist/cjs/src",
     "removeComments": true,
     "strict": true,
-    "target": "ES2022",
+    "target": "es5",
     "typeRoots": ["node_modules/@types"]
   },
   "include": ["src/**/*.ts"],
